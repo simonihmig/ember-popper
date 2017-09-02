@@ -39,9 +39,7 @@ test('sets eventsEnabled in the Popper instance', function(assert) {
 
     parent.style.height = '200px';
 
-    triggerEvent(document.querySelector('body'), 'scroll');
-
-    return wait().then(() => {
+    return triggerEvent(document.querySelector('body'), 'scroll').then(() => {
       // Sanity check
       assert.notEqual(initialBottomOfParent, parent.getBoundingClientRect().bottom, 'the parent moved');
 
