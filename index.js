@@ -3,6 +3,7 @@
 
 const Funnel = require('broccoli-funnel');
 const StripClassCallCheck = require('babel6-plugin-strip-class-callcheck');
+const ProtoToAssign = require('babel-plugin-transform-proto-to-assign');
 const fastbootTransform = require('fastboot-transform');
 const VersionChecker = require('ember-cli-version-checker');
 
@@ -46,13 +47,16 @@ module.exports = {
       return;
     }
 
-    if (/production/.test(env) || /test/.test(env)) {
-      // In some versions of Ember, this.options is undefined during tests
-      this.options = this.options || {};
+    // In some versions of Ember, this.options is undefined during tests
+    this.options = this.options || {};
 
-      // Make sure the babel options are accessible
-      const babelOptions = this.options.babel = this.options.babel || {};
-      babelOptions.postTransformPlugins = babelOptions.postTransformPlugins || [];
+    // Make sure the babel options are accessible
+    const babelOptions = this.options.babel = this.options.babel || {};
+    babelOptions.postTransformPlugins = babelOptions.postTransformPlugins || [];
+    babelOptions.plugins = babelOptions.plugins || [];
+    babelOptions.plugins.push(ProtoToAssign);
+
+    if (/production/.test(env) || /test/.test(env)) {
       babelOptions.postTransformPlugins.push(StripClassCallCheck);
     }
 
